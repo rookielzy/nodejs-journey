@@ -13,6 +13,7 @@
  * 步骤：
  * 1. 生成一个本地服务器
  * 2. 获取请求的URL （获取特定的URL去做指定的事）
+ * 3. 获取请求方式
  */
 
 // 依赖
@@ -35,8 +36,9 @@ const server = http.createServer((req, res) => {
   // 简单处理 path
   // 去除多余的 `/`
   const trimmedPath = path.replace(/^\/+|\/+$/g, '')
+  const method = req.method.toLowerCase()
 
-  console.log(trimmedPath)
+  console.log('request method: ', method)
 
   // 服务器返回一段字符串 'Hello World'
   res.end('Hello World\n')
