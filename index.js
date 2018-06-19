@@ -14,6 +14,7 @@
  * 1. 生成一个本地服务器
  * 2. 获取请求的URL （获取特定的URL去做指定的事）
  * 3. 获取请求方式
+ * 4. 获取URL参数（query string）
  */
 
 // 依赖
@@ -38,7 +39,10 @@ const server = http.createServer((req, res) => {
   const trimmedPath = path.replace(/^\/+|\/+$/g, '')
   const method = req.method.toLowerCase()
 
-  console.log('request method: ', method)
+  // 获取URL参数（query string）
+  const queryStringObject = parsedUrl.query
+
+  console.log('query string: ', queryStringObject)
 
   // 服务器返回一段字符串 'Hello World'
   res.end('Hello World\n')
