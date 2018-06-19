@@ -42,7 +42,9 @@ const server = http.createServer((req, res) => {
   // 获取URL参数（query string）
   const queryStringObject = parsedUrl.query
 
-  console.log('query string: ', queryStringObject)
+  // 获取请求头
+  const headers = req.headers
+  console.log('request header: ', headers)
 
   // 服务器返回一段字符串 'Hello World'
   res.end('Hello World\n')
