@@ -15,11 +15,14 @@
  * 2. 获取请求的URL （获取特定的URL去做指定的事）
  * 3. 获取请求方式
  * 4. 获取URL参数（query string）
+ * 5. 获取请求头（Headers）
+ * 6. 获取请求所带的数据
  */
 
 // 依赖
 const http = require('http') // 用于我们开启本地服务器
 const url = require('url')  // 处理请求URL
+const StringDecoder = require('string_decoder').StringDecoder
 
 // 创建一个本地服务器
 // req 对应就是 request 即请求
@@ -44,12 +47,27 @@ const server = http.createServer((req, res) => {
 
   // 获取请求头
   const headers = req.headers
-  console.log('request header: ', headers)
 
-  // 服务器返回一段字符串 'Hello World'
-  res.end('Hello World\n')
+  // 由于请求所带的数据是二进制，我们需要进行转换处理
+  // 这里我们演示使用 utf-8 来解码字符串数据
+  const decoder = new StringDecoder('utf-8')
+  let buffer = '' // 存储结果
 
-  console.log()
+  // 监听请求数据的接入(若有数据的话)
+  req.on('data', data => {
+    buffer += decoder.write(data)
+  })
+
+  // 监听请求结束（请求结束就一定会触发）
+  req.on('end', () => {
+    // 告诉解码方法体解码结束
+    buffer += decoder.end()
+
+    // 服务器返回一段字符串 'Hello World'
+    res.end('Hello World\n')
+
+    console.log('Request received with this payload: ', buffer)
+  })
 })
 
 // 启动本地服务器
