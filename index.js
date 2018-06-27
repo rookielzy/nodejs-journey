@@ -17,7 +17,26 @@
  * 4. 获取URL参数（query string）
  * 5. 获取请求头（Headers）
  * 6. 获取请求所带的数据
+ * 7. 处理路由
  */
+
+// 路由处理
+const handlers = {
+  sample: (data, callback) => {
+    callback(406, { 'name': 'sample handler' })
+  },
+  notFound: (data, callback) => {
+    callback(404)
+  }
+}
+
+
+// 定义路由
+const router = {
+  'sample': handlers.sample,
+  'notFound': handlers.notFound
+}
+
 
 // 依赖
 const http = require('http') // 用于我们开启本地服务器
@@ -63,10 +82,34 @@ const server = http.createServer((req, res) => {
     // 告诉解码方法体解码结束
     buffer += decoder.end()
 
-    // 服务器返回一段字符串 'Hello World'
-    res.end('Hello World\n')
+    // 获取请求路由处理方法体
+    const choseHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : router.notFound
 
-    console.log('Request received with this payload: ', buffer)
+    // 拼接数据返回给路由处理函数
+    const data = {
+      trimmedPath,
+      queryStringObject,
+      method,
+      headers,
+      payload: buffer
+    }
+
+    // 将路由指向特定的处理函数中
+    choseHandler(data, (statusCode, payload) => {
+      // 获取处理函数中指定的状态码，否则默认返回200
+      statusCode = typeof(statusCode) === 'number' ? statusCode : 200
+      // 获取路由处理函数中回调函数返回的数据，否则默认返回空对象
+      payload = typeof(payload) === 'object' ? payload : {}
+
+      // 将返回的数据转换为字符串
+      const payloadString = JSON.stringify(payload)
+
+      // 返回响应
+      res.writeHead(statusCode)
+      res.end(payloadString)
+
+      console.log('Return this response: ', statusCode, payloadString)
+    })
   })
 })
 
