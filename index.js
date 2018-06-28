@@ -105,6 +105,7 @@ const server = http.createServer((req, res) => {
       const payloadString = JSON.stringify(payload)
 
       // 返回响应
+      res.setHeader('Content-Type', 'application/json')
       res.writeHead(statusCode)
       res.end(payloadString)
 
