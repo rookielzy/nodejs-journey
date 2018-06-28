@@ -19,6 +19,7 @@
  * 6. 获取请求所带的数据
  * 7. 处理路由
  * 8. 返回JSON格式数据 
+ * 9. 使用配置信息来开启服务
  */
 
 // 路由处理
@@ -43,6 +44,9 @@ const router = {
 const http = require('http') // 用于我们开启本地服务器
 const url = require('url')  // 处理请求URL
 const StringDecoder = require('string_decoder').StringDecoder
+
+// 获取配置信息
+const config = require('./config')
 
 // 创建一个本地服务器
 // req 对应就是 request 即请求
@@ -116,7 +120,7 @@ const server = http.createServer((req, res) => {
 })
 
 // 启动本地服务器
-server.listen(3000, () => {
+server.listen(config.port, () => {
   // 开启成功后的回调
-  console.log('The server is running on http://localhost:3000 now')
+  console.log('The server is running on http://localhost:' + config.port + ' now, ' + 'and the env name is : ' + config.envName)
 })
